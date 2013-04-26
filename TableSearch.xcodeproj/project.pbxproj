@@ -18,11 +18,6 @@
 		54C70A16172AA98200FAFC66 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 54C70A15172AA98200FAFC66 /* Default-568h@2x.png */; };
 		54C70A19172AA98200FAFC66 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54C70A17172AA98200FAFC66 /* MainStoryboard.storyboard */; };
 		54C70A1C172AA98200FAFC66 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54C70A1B172AA98200FAFC66 /* ViewController.m */; };
-		54C70A24172AA98D00FAFC66 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54C70A23172AA98D00FAFC66 /* TableViewController.m */; };
-		54C70A28172AA99500FAFC66 /* Data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54C70A25172AA99500FAFC66 /* Data.plist */; };
-		54C70A29172AA99500FAFC66 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54C70A27172AA99500FAFC66 /* DetailViewController.m */; };
-		54C70A2B172AAA5F00FAFC66 /* acolon.png in Resources */ = {isa = PBXBuildFile; fileRef = 54C70A2A172AAA5F00FAFC66 /* acolon.png */; };
-		54C70A2D172AAA6600FAFC66 /* piedirosso.png in Resources */ = {isa = PBXBuildFile; fileRef = 54C70A2C172AAA6600FAFC66 /* piedirosso.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,13 +37,6 @@
 		54C70A18172AA98200FAFC66 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		54C70A1A172AA98200FAFC66 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		54C70A1B172AA98200FAFC66 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		54C70A22172AA98D00FAFC66 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
-		54C70A23172AA98D00FAFC66 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
-		54C70A25172AA99500FAFC66 /* Data.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Data.plist; sourceTree = "<group>"; };
-		54C70A26172AA99500FAFC66 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		54C70A27172AA99500FAFC66 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
-		54C70A2A172AAA5F00FAFC66 /* acolon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = acolon.png; sourceTree = "<group>"; };
-		54C70A2C172AAA6600FAFC66 /* piedirosso.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = piedirosso.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,11 +88,6 @@
 				54C70A17172AA98200FAFC66 /* MainStoryboard.storyboard */,
 				54C70A1A172AA98200FAFC66 /* ViewController.h */,
 				54C70A1B172AA98200FAFC66 /* ViewController.m */,
-				54C70A22172AA98D00FAFC66 /* TableViewController.h */,
-				54C70A23172AA98D00FAFC66 /* TableViewController.m */,
-				54C70A25172AA99500FAFC66 /* Data.plist */,
-				54C70A26172AA99500FAFC66 /* DetailViewController.h */,
-				54C70A27172AA99500FAFC66 /* DetailViewController.m */,
 				54C70A06172AA98200FAFC66 /* Supporting Files */,
 			);
 			path = TableSearch;
@@ -113,8 +96,6 @@
 		54C70A06172AA98200FAFC66 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				54C70A2A172AAA5F00FAFC66 /* acolon.png */,
-				54C70A2C172AAA6600FAFC66 /* piedirosso.png */,
 				54C70A07172AA98200FAFC66 /* TableSearch-Info.plist */,
 				54C70A08172AA98200FAFC66 /* InfoPlist.strings */,
 				54C70A0B172AA98200FAFC66 /* main.m */,
@@ -182,9 +163,6 @@
 				54C70A14172AA98200FAFC66 /* Default@2x.png in Resources */,
 				54C70A16172AA98200FAFC66 /* Default-568h@2x.png in Resources */,
 				54C70A19172AA98200FAFC66 /* MainStoryboard.storyboard in Resources */,
-				54C70A28172AA99500FAFC66 /* Data.plist in Resources */,
-				54C70A2B172AAA5F00FAFC66 /* acolon.png in Resources */,
-				54C70A2D172AAA6600FAFC66 /* piedirosso.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,8 +176,6 @@
 				54C70A0C172AA98200FAFC66 /* main.m in Sources */,
 				54C70A10172AA98200FAFC66 /* AppDelegate.m in Sources */,
 				54C70A1C172AA98200FAFC66 /* ViewController.m in Sources */,
-				54C70A24172AA98D00FAFC66 /* TableViewController.m in Sources */,
-				54C70A29172AA99500FAFC66 /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
