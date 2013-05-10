@@ -32,5 +32,45 @@
 		<key>cityImage</key>
 		<string>acolon.png</string>
 	</dict>
+	<dict>
+		<key>city</key>
+		<string>Sandiago</string>
+		<key>state</key>
+		<string>CA</string>
+		<key>cityText</key>
+		<string>Here is another city from california</string>
+		<key>cityImage</key>
+		<string>acolon.png</string>
+	</dict>
+	<dict>
+		<key>city</key>
+		<string>Talahasy</string>
+		<key>state</key>
+		<string>FL</string>
+		<key>cityText</key>
+		<string>Talahasy is the capital of the florida state.</string>
+		<key>cityImage</key>
+		<string>acolon.png</string>
+	</dict>
+	<dict>
+		<key>city</key>
+		<string>Boise</string>
+		<key>state</key>
+		<string>Idaho</string>
+		<key>cityText</key>
+		<string>boise is the capital of idaho and i have no idea where that is.</string>
+		<key>cityImage</key>
+		<string>acolon.png</string>
+	</dict>
+	<dict>
+		<key>city</key>
+		<string>Springfield</string>
+		<key>state</key>
+		<string>IL</string>
+		<key>cityText</key>
+		<string>yet another beautiful city in IL</string>
+		<key>cityImage</key>
+		<string>acolon.png</string>
+	</dict>
 </array>
 </plist>

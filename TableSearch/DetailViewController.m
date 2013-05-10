@@ -1,6 +1,6 @@
 //
 //  DetailViewController.m
-//  PopulateTableView
+//  TableSearch
 //
 //  Created by Adrian Phillips on 4/26/13.
 //  Copyright (c) 2013 Adrian Phillips. All rights reserved.
@@ -13,7 +13,7 @@
 @end
 
 @implementation DetailViewController
-@synthesize cityImageString, cityTextString;
+@synthesize cityImageString, cityTextString, cityNameString, stateNameString;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,6 +30,9 @@
     
     cityImage.image = [UIImage imageNamed:cityImageString];
     cityText.text = cityTextString;
+    cityName.text = cityNameString;
+    stateName.text = stateNameString;
+    
 	// Do any additional setup after loading the view.
 }
 
