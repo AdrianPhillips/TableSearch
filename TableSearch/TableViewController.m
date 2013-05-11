@@ -36,6 +36,28 @@
     content = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Data" ofType:@"plist"]];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSString *filePath = [self plistFileDocumentPath:@"Data.plist"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL exist = [fileManager fileExistsAtPath:filePath];
+    if (!exist) {
+        return;
+    }
+    NSMutableArray *dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+    content = dataArray;
+    [self.tableView reloadData];
+}
+
+- (NSString *)plistFileDocumentPath:(NSString *)plistName
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *writablePath = [documentsDirectory stringByAppendingPathComponent:plistName];
+    return writablePath;
+}
+
 - (IBAction)add;
 {
     AddViewController* controller = [[AddViewController alloc] init];
