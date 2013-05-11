@@ -73,6 +73,14 @@
     self.name = self.stateTextField.text;
     self.description = self.cityDescription.text;
     
+#define PLIST_NAME @"Data.plist"
+    [self createPlistCopyInDocuments:PLIST_NAME];
+    NSString *filePath = [self plistFileDocumentPath:PLIST_NAME];
+    NSMutableArray *dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+    NSDictionary *data = @{@"city":self.name,@"state":self.stateTextField.text,@"cityText":self.cityDescription.text};
+    [dataArray addObject:data];
+    [dataArray writeToFile:filePath atomically:YES];
+
     
     if ([[self parentViewController] respondsToSelector:@selector(dismissViewControllerAnimated:)]){
         
@@ -83,6 +91,38 @@
         [[self presentingViewController] dismissViewControllerAnimated:YES completion:nil];
     }
 }
+
+- (NSString *)plistFileDocumentPath:(NSString *)plistName
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *writablePath = [documentsDirectory stringByAppendingPathComponent:plistName];
+    return writablePath;
+}
+
+- (void)createPlistCopyInDocuments:(NSString *)plistName
+{
+    // First, test for existence.
+    BOOL success;
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    NSString *plistFilePath = [self plistFileDocumentPath:plistName];
+    success = [fileManager fileExistsAtPath:plistFilePath];
+    
+    if (success) {
+        return;
+    }
+    
+    // The writable file does not exist, so copy from the bundle to the appropriate location.
+    NSString *defaultPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:plistName];
+    success = [fileManager copyItemAtPath:defaultPath toPath:plistFilePath error:&error];
+    if (!success) {
+        NSAssert1(0, @"Failed to create writable file with message '%@'.", [error localizedDescription]);
+    }
+}
+
+
 
 - (IBAction)cancel {
     {
