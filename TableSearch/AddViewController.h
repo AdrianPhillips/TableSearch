@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@class AddViewController;
+
+@protocol AddViewControllerDelegate <NSObject>
+- (void)addViewController:(AddViewController *)sender
+              setCityName:(NSString *)city
+             setStateName:(NSString *)state
+       setCityDescription:(NSString *)text
+         setCityImageName:(NSString *)imageName;
+@end
+
 @interface AddViewController : UIViewController <UINavigationControllerDelegate,UIImagePickerControllerDelegate>{
     
     IBOutlet UITextField *cityTextField;
@@ -28,6 +38,7 @@
 @property (nonatomic, strong) IBOutlet UIButton* choosePhotoButton;
 @property (nonatomic, strong) IBOutlet UIButton* takePhotoButton;
 
+@property (strong, nonatomic) id <AddViewControllerDelegate> delegate;
 
 
 - (IBAction)save;

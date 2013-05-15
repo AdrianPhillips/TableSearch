@@ -69,11 +69,18 @@
         return;
     }
     
+    // TODO: you need to save the image in the application documents directory.
+    
     self.name = self.cityTextField.text;
     self.name = self.stateTextField.text;
     self.description = self.cityDescription.text;
     
-    
+    [self.delegate addViewController:self
+                         setCityName:self.cityTextField.text
+                        setStateName:self.stateTextField.text
+                  setCityDescription:self.cityDescription.text
+                    setCityImageName:@""];                            // TODO: you need to add image support.
+        
     if ([[self parentViewController] respondsToSelector:@selector(dismissViewControllerAnimated:)]){
         
         [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
