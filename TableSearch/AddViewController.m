@@ -73,7 +73,12 @@
     self.name = self.stateTextField.text;
     self.description = self.cityDescription.text;
     
-    
+    [self.delegate addViewController:self
+                         setCityName:self.cityTextField.text
+                        setStateName:self.stateTextField.text
+                  setCityDescription:self.cityDescription.text
+                        setCityImage:self.image];
+        
     if ([[self parentViewController] respondsToSelector:@selector(dismissViewControllerAnimated:)]){
         
         [[self parentViewController] dismissViewControllerAnimated:YES completion:nil];
@@ -111,7 +116,7 @@
 - (IBAction)takePhoto {
     
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    //picker.delegate = self;
+    picker.delegate = self;
     picker.allowsEditing = YES;
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     

@@ -8,9 +8,7 @@
 
 @interface TableViewController : UITableViewController <UISearchBarDelegate>
 
-@property (strong, nonatomic) NSArray *content;
+@property (strong, nonatomic) NSMutableArray *content;
 @property (strong, nonatomic) NSArray *searchResults;
-
-- (IBAction)add;
 
 @end

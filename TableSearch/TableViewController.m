@@ -9,16 +9,14 @@
 #import "TableViewController.h"
 #import "DetailViewController.h"
 #import "AddViewController.h"
+#import "AppDelegate.h"
+#import "NSDictionary+CityRecord.h"
 
-@interface TableViewController ()
+@interface TableViewController () <AddViewControllerDelegate>
 
 @end
 
 @implementation TableViewController
-
-@synthesize content, searchResults;
-
-
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -33,13 +31,8 @@
 {
     [super viewDidLoad];
     
-    content = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Data" ofType:@"plist"]];
-}
-
-- (IBAction)add;
-{
-    AddViewController* controller = [[AddViewController alloc] init];
-    [self presentViewController:controller animated:YES completion:nil];
+    self.content = [[NSMutableArray alloc] initWithContentsOfFile:[AppDelegate writeableFilePath]];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning
@@ -65,7 +58,7 @@
     
     NSPredicate *resultPredicate = [NSPredicate predicateWithFormat: @"SELF['city'] BEGINSWITH[c] %@ ", searchText];
     
-    searchResults = [[content filteredArrayUsingPredicate:resultPredicate] retain];
+    self.searchResults = [[self.content filteredArrayUsingPredicate:resultPredicate] retain];
 }
 
 -(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
@@ -86,26 +79,40 @@
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault reuseIdentifier: CellIdentifier] autorelease];
     }
     
+    NSDictionary *cityRecord;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        cell.textLabel.text = [[searchResults objectAtIndex:indexPath.row] valueForKey:@"city"];
-        cell.detailTextLabel.text = [[searchResults objectAtIndex:indexPath.row] valueForKey:@"state"];
-        cell.imageView.image = [UIImage imageNamed:[[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
+        cityRecord = [self.searchResults objectAtIndex:indexPath.row];
     } else {
-        cell.textLabel.text = [[self.content objectAtIndex:indexPath.row] valueForKey:@"city"];
-        cell.detailTextLabel.text = [[self.content objectAtIndex:indexPath.row] valueForKey:@"state"];
-        cell.imageView.image = [UIImage imageNamed:[[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
-
+        cityRecord = [self.content objectAtIndex:indexPath.row];
     }
+    
+    cell.textLabel.text       = cityRecord.cityName;
+    cell.detailTextLabel.text = cityRecord.stateName;
+    cell.imageView.image      = cityRecord.cityImage;
     
     return cell;
 }
-
-
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         [self performSegueWithIdentifier: @"showDetails" sender: self];
+    }
+}
+
+// Override to support Edit mode for the table view
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [self.content removeObjectAtIndex:indexPath.row];
+        [self.content writeToFile:[AppDelegate writeableFilePath] atomically:YES];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
@@ -119,19 +126,37 @@
         DetailViewController *DVC = [segue destinationViewController];
         
         if ([self.searchDisplayController isActive]) {
-            
-            DVC.cityImageString = [[searchResults objectAtIndex:indexPath.row] valueForKey:@"cityImage"];
-            DVC.cityTextString = [[searchResults objectAtIndex:indexPath.row] valueForKey:@"cityText"];
-            DVC.cityNameString = [[searchResults objectAtIndex:indexPath.row] valueForKey:@"city"];
-            DVC.stateNameString = [[searchResults objectAtIndex:indexPath.row] valueForKey:@"state"];
+            DVC.cityRecord = [self.searchResults objectAtIndex:indexPath.row];
         } else {
-            
-            DVC.cityImageString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"];
-            DVC.cityTextString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"cityText"];
-            DVC.cityNameString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"city"];
-            DVC.stateNameString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"state"];
+            DVC.cityRecord = [self.content objectAtIndex:indexPath.row];
         }
+        
     }
+    else if ([segue.identifier isEqualToString:@"ShowAdd"]) {
+        
+        AddViewController *addController = [segue destinationViewController];
+        addController.delegate = self;
+    }
+}
+
+- (void)addViewController:(AddViewController *)sender
+              setCityName:(NSString *)city
+             setStateName:(NSString *)state
+       setCityDescription:(NSString *)text
+             setCityImage:(UIImage *)image
+{
+    NSString *imageName = [AppDelegate createFileForImage:image];
+    
+    NSDictionary *newRecord = [NSDictionary dictionaryForCityRecordWithCityName:city
+                                                                      stateName:state
+                                                                cityDescription:text
+                                                                  cityImageName:imageName];
+
+    [self.content addObject:newRecord];
+    
+    [self.content writeToFile:[AppDelegate writeableFilePath] atomically:YES];
+    
+    [self.tableView reloadData];
 }
 
 @end
