@@ -116,21 +116,19 @@ static NSString *dataFileName = @"Data.plist";
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault reuseIdentifier: CellIdentifier] autorelease];
     }
     
+    NSArray *dataSource;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        cell.textLabel.text = [[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"city"];
-        cell.detailTextLabel.text = [[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"state"];
-        cell.imageView.image = [UIImage imageNamed:[[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
+        dataSource = self.searchResults;
     } else {
-        cell.textLabel.text = [[self.content objectAtIndex:indexPath.row] valueForKey:@"city"];
-        cell.detailTextLabel.text = [[self.content objectAtIndex:indexPath.row] valueForKey:@"state"];
-        cell.imageView.image = [UIImage imageNamed:[[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
-
+        dataSource = self.content;
     }
+    
+    cell.textLabel.text       = [[dataSource objectAtIndex:indexPath.row] valueForKey:@"city"];
+    cell.detailTextLabel.text = [[dataSource objectAtIndex:indexPath.row] valueForKey:@"state"];
+    cell.imageView.image      = [self loadImageNamed:[[dataSource objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
     
     return cell;
 }
-
-
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -169,12 +167,30 @@ static NSString *dataFileName = @"Data.plist";
     }
 }
 
+- (UIImage *)loadImageNamed:(NSString *)name
+{
+    NSString *imageDir  = [self.writeableFilePath stringByDeletingLastPathComponent];
+    NSString *imagePath = [NSString stringWithFormat:@"%@/%@", imageDir, name];
+
+    // Try loading the image from the documents directory
+    UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
+    
+    // If we didn't find it try the  main bundle
+    if (!image) {
+        image = [UIImage imageNamed:name];
+    }
+
+    return image;
+}
+
 - (void)addViewController:(AddViewController *)sender
               setCityName:(NSString *)city
              setStateName:(NSString *)state
        setCityDescription:(NSString *)text
-         setCityImageName:(NSString *)imageName
+             setCityImage:(UIImage *)image
 {
+    NSString *imageName = [self createFileForImage:image];    
+    
     NSDictionary *newRecord = @{ @"city"        : city,
                                  @"state"       : state,
                                  @"cityText"    : text,
@@ -185,6 +201,27 @@ static NSString *dataFileName = @"Data.plist";
     [self.content writeToFile:self.writeableFilePath atomically:YES];
     
     [self.tableView reloadData];
+}
+
+NSString * const ImageCounterKey   = @"ImageCounter";
+
+- (NSString *)createFileForImage:(UIImage *)image
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSInteger imageCount = [userDefaults integerForKey:ImageCounterKey];
+    imageCount++;
+    
+    NSString *imageDir  = [self.writeableFilePath stringByDeletingLastPathComponent];
+    NSString *imageName = [NSString stringWithFormat:@"image%d.jpg", imageCount];
+    NSString *imagePath = [NSString stringWithFormat:@"%@/%@", imageDir, imageName];
+    
+    NSData* imageData = UIImageJPEGRepresentation(image, 1.0);
+
+    [imageData writeToFile:imagePath atomically:YES];
+
+    [userDefaults setInteger:imageCount  forKey:ImageCounterKey];
+
+    return imageName;
 }
 
 

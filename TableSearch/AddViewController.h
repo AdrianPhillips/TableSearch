@@ -15,7 +15,7 @@
               setCityName:(NSString *)city
              setStateName:(NSString *)state
        setCityDescription:(NSString *)text
-         setCityImageName:(NSString *)imageName;
+             setCityImage:(UIImage *)image;
 @end
 
 @interface AddViewController : UIViewController <UINavigationControllerDelegate,UIImagePickerControllerDelegate>{
