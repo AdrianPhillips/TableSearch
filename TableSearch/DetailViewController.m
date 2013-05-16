@@ -7,13 +7,13 @@
 //
 
 #import "DetailViewController.h"
+#import "NSDictionary+CityRecord.h"
 
 @interface DetailViewController ()
 
 @end
 
 @implementation DetailViewController
-@synthesize cityImageString, cityTextString, cityNameString, stateNameString;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -28,10 +28,10 @@
 {
     [super viewDidLoad];
     
-    cityImage.image = [UIImage imageNamed:cityImageString];
-    cityText.text = cityTextString;
-    cityName.text = cityNameString;
-    stateName.text = stateNameString;
+    self.cityImage.image = self.cityRecord.cityImage;
+    self.cityName.text   = self.cityRecord.cityName;
+    self.stateName.text  = self.cityRecord.stateName;
+    self.cityText.text   = self.cityRecord.cityText;
     
 	// Do any additional setup after loading the view.
 }

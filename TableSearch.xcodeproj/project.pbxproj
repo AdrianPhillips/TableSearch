@@ -20,10 +20,11 @@
 		54C70A1C172AA98200FAFC66 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54C70A1B172AA98200FAFC66 /* ViewController.m */; };
 		54C70A24172AA98D00FAFC66 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54C70A23172AA98D00FAFC66 /* TableViewController.m */; };
 		54C70A28172AA99500FAFC66 /* Data.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54C70A25172AA99500FAFC66 /* Data.plist */; };
-		54C70A29172AA99500FAFC66 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54C70A27172AA99500FAFC66 /* DetailViewController.m */; };
+		54C70A29172AA99500FAFC66 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54C70A27172AA99500FAFC66 /* DetailViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		54C70A2B172AAA5F00FAFC66 /* acolon.png in Resources */ = {isa = PBXBuildFile; fileRef = 54C70A2A172AAA5F00FAFC66 /* acolon.png */; };
 		54C70A2D172AAA6600FAFC66 /* piedirosso.png in Resources */ = {isa = PBXBuildFile; fileRef = 54C70A2C172AAA6600FAFC66 /* piedirosso.png */; };
 		54DECE6C173D3F58008E61A9 /* AddViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DECE6B173D3F58008E61A9 /* AddViewController.m */; };
+		C3A18507174540F100332316 /* NSDictionary+CityRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A18506174540F100332316 /* NSDictionary+CityRecord.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,8 @@
 		54C70A2C172AAA6600FAFC66 /* piedirosso.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = piedirosso.png; sourceTree = "<group>"; };
 		54DECE6A173D3F58008E61A9 /* AddViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddViewController.h; sourceTree = "<group>"; };
 		54DECE6B173D3F58008E61A9 /* AddViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddViewController.m; sourceTree = "<group>"; };
+		C3A18505174540F100332316 /* NSDictionary+CityRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+CityRecord.h"; sourceTree = "<group>"; };
+		C3A18506174540F100332316 /* NSDictionary+CityRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+CityRecord.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +101,8 @@
 		54C70A05172AA98200FAFC66 /* TableSearch */ = {
 			isa = PBXGroup;
 			children = (
+				C3A18505174540F100332316 /* NSDictionary+CityRecord.h */,
+				C3A18506174540F100332316 /* NSDictionary+CityRecord.m */,
 				54C70A0E172AA98200FAFC66 /* AppDelegate.h */,
 				54C70A0F172AA98200FAFC66 /* AppDelegate.m */,
 				54C70A17172AA98200FAFC66 /* MainStoryboard.storyboard */,
@@ -206,6 +211,7 @@
 				54C70A24172AA98D00FAFC66 /* TableViewController.m in Sources */,
 				54C70A29172AA99500FAFC66 /* DetailViewController.m in Sources */,
 				54DECE6C173D3F58008E61A9 /* AddViewController.m in Sources */,
+				C3A18507174540F100332316 /* NSDictionary+CityRecord.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

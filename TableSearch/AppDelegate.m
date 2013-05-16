@@ -49,4 +49,61 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
++ (NSString *)writeableFilePath
+{
+    static NSString *dataFileName       = @"Data.plist";
+    static NSString *_writeableFilePath = nil;
+
+    if (_writeableFilePath)
+        return _writeableFilePath;
+    
+    // You can not write to files in the application bundle. The bundle is signed and can not be changed.
+    // You need to copy the data file from the application bundle to the application documents directory.
+    
+    // Get the path to the data file in the documents directory.
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    _writeableFilePath = [[documentsDirectory stringByAppendingPathComponent:dataFileName] copy];
+    
+    // The data file does not exist copy it from the bundle.
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if(![fileManager fileExistsAtPath:_writeableFilePath]) {
+        
+        NSString *readOnlyFilePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:dataFileName];
+        NSError *error;
+        BOOL success = [fileManager copyItemAtPath:readOnlyFilePath toPath:_writeableFilePath error:&error];
+        if (!success) {
+            [[[UIAlertView alloc] initWithTitle:@"Can not create data file!"
+                                        message:@"[error localizedDescription]"
+                                       delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil] show];
+        }
+        
+    }
+    
+    return _writeableFilePath;
+}
+
+NSString * const ImageCounterKey   = @"ImageCounter";
+
++ (NSString *)createFileForImage:(UIImage *)image
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSInteger imageCount = [userDefaults integerForKey:ImageCounterKey];
+    imageCount++;
+    
+    NSString *imageDir  = [[AppDelegate writeableFilePath] stringByDeletingLastPathComponent];
+    NSString *imageName = [NSString stringWithFormat:@"image%d.jpg", imageCount];
+    NSString *imagePath = [NSString stringWithFormat:@"%@/%@", imageDir, imageName];
+    
+    NSData* imageData = UIImageJPEGRepresentation(image, 1.0);
+    
+    [imageData writeToFile:imagePath atomically:YES];
+    
+    [userDefaults setInteger:imageCount  forKey:ImageCounterKey];
+    
+    return imageName;
+}
+
 @end

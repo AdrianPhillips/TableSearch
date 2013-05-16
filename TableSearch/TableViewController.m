@@ -9,52 +9,14 @@
 #import "TableViewController.h"
 #import "DetailViewController.h"
 #import "AddViewController.h"
+#import "AppDelegate.h"
+#import "NSDictionary+CityRecord.h"
 
 @interface TableViewController () <AddViewControllerDelegate>
-
-@property (readonly, strong, nonatomic) NSString *writeableFilePath;
 
 @end
 
 @implementation TableViewController
-
-@synthesize writeableFilePath = _writeableFilePath;
-
-static NSString *dataFileName = @"Data.plist";
-
-// Lazy create and cache writable file path
-- (NSString *)writeableFilePath
-{
-    if (_writeableFilePath)
-        return _writeableFilePath;
-    
-    // You can not write to files in the application bundle. The bundle is signed and can not be changed.
-    // You need to copy the data file from the application bundle to the application documents directory. 
-
-    // Get the path to the data file in the documents directory.
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    _writeableFilePath = [[documentsDirectory stringByAppendingPathComponent:dataFileName] copy];
-    
-    // The data file does not exist copy it from the bundle.
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if(![fileManager fileExistsAtPath:_writeableFilePath]) {
-        
-        NSString *readOnlyFilePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:dataFileName];
-        NSError *error;
-        BOOL success = [fileManager copyItemAtPath:readOnlyFilePath toPath:_writeableFilePath error:&error];
-        if (!success) {
-            [[[UIAlertView alloc] initWithTitle:@"Can not create data file!"
-                                        message:@"[error localizedDescription]"
-                                       delegate:nil
-                              cancelButtonTitle:@"OK"
-                              otherButtonTitles:nil] show];
-        }
-
-    }
-    
-    return _writeableFilePath;
-}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -69,7 +31,7 @@ static NSString *dataFileName = @"Data.plist";
 {
     [super viewDidLoad];
     
-    self.content = [[NSMutableArray alloc] initWithContentsOfFile:self.writeableFilePath];
+    self.content = [[NSMutableArray alloc] initWithContentsOfFile:[AppDelegate writeableFilePath]];
 }
 
 - (void)didReceiveMemoryWarning
@@ -116,16 +78,16 @@ static NSString *dataFileName = @"Data.plist";
         cell = [[[UITableViewCell alloc] initWithStyle: UITableViewCellStyleDefault reuseIdentifier: CellIdentifier] autorelease];
     }
     
-    NSArray *dataSource;
+    NSDictionary *cityRecord;
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        dataSource = self.searchResults;
+        cityRecord = [self.searchResults objectAtIndex:indexPath.row];
     } else {
-        dataSource = self.content;
+        cityRecord = [self.content objectAtIndex:indexPath.row];
     }
     
-    cell.textLabel.text       = [[dataSource objectAtIndex:indexPath.row] valueForKey:@"city"];
-    cell.detailTextLabel.text = [[dataSource objectAtIndex:indexPath.row] valueForKey:@"state"];
-    cell.imageView.image      = [self loadImageNamed:[[dataSource objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
+    cell.textLabel.text       = cityRecord.cityName;
+    cell.detailTextLabel.text = cityRecord.stateName;
+    cell.imageView.image      = cityRecord.cityImage;
     
     return cell;
 }
@@ -147,18 +109,11 @@ static NSString *dataFileName = @"Data.plist";
         DetailViewController *DVC = [segue destinationViewController];
         
         if ([self.searchDisplayController isActive]) {
-            
-            DVC.cityImageString = [[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"cityImage"];
-            DVC.cityTextString = [[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"cityText"];
-            DVC.cityNameString = [[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"city"];
-            DVC.stateNameString = [[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"state"];
+            DVC.cityRecord = [self.searchResults objectAtIndex:indexPath.row];
         } else {
-            
-            DVC.cityImageString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"];
-            DVC.cityTextString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"cityText"];
-            DVC.cityNameString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"city"];
-            DVC.stateNameString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"state"];
+            DVC.cityRecord = [self.content objectAtIndex:indexPath.row];
         }
+        
     }
     else if ([segue.identifier isEqualToString:@"ShowAdd"]) {
         
@@ -167,63 +122,24 @@ static NSString *dataFileName = @"Data.plist";
     }
 }
 
-- (UIImage *)loadImageNamed:(NSString *)name
-{
-    NSString *imageDir  = [self.writeableFilePath stringByDeletingLastPathComponent];
-    NSString *imagePath = [NSString stringWithFormat:@"%@/%@", imageDir, name];
-
-    // Try loading the image from the documents directory
-    UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
-    
-    // If we didn't find it try the  main bundle
-    if (!image) {
-        image = [UIImage imageNamed:name];
-    }
-
-    return image;
-}
-
 - (void)addViewController:(AddViewController *)sender
               setCityName:(NSString *)city
              setStateName:(NSString *)state
        setCityDescription:(NSString *)text
              setCityImage:(UIImage *)image
 {
-    NSString *imageName = [self createFileForImage:image];    
+    NSString *imageName = [AppDelegate createFileForImage:image];
     
-    NSDictionary *newRecord = @{ @"city"        : city,
-                                 @"state"       : state,
-                                 @"cityText"    : text,
-                                 @"cityImage"   : imageName };
-    
+    NSDictionary *newRecord = [NSDictionary dictionaryForCityRecordWithCityName:city
+                                                                      stateName:state
+                                                                cityDescription:text
+                                                                  cityImageName:imageName];
+
     [self.content addObject:newRecord];
     
-    [self.content writeToFile:self.writeableFilePath atomically:YES];
+    [self.content writeToFile:[AppDelegate writeableFilePath] atomically:YES];
     
     [self.tableView reloadData];
 }
-
-NSString * const ImageCounterKey   = @"ImageCounter";
-
-- (NSString *)createFileForImage:(UIImage *)image
-{
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSInteger imageCount = [userDefaults integerForKey:ImageCounterKey];
-    imageCount++;
-    
-    NSString *imageDir  = [self.writeableFilePath stringByDeletingLastPathComponent];
-    NSString *imageName = [NSString stringWithFormat:@"image%d.jpg", imageCount];
-    NSString *imagePath = [NSString stringWithFormat:@"%@/%@", imageDir, imageName];
-    
-    NSData* imageData = UIImageJPEGRepresentation(image, 1.0);
-
-    [imageData writeToFile:imagePath atomically:YES];
-
-    [userDefaults setInteger:imageCount  forKey:ImageCounterKey];
-
-    return imageName;
-}
-
-
 
 @end

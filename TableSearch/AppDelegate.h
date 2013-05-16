@@ -12,4 +12,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
++ (NSString *)writeableFilePath;
++ (NSString *)createFileForImage:(UIImage *)image;
+
 @end
