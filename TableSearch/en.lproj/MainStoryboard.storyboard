@@ -52,7 +52,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="States" id="yw4-cJ-f4y">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Qzj-vX-AT1">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="Qzj-vX-AT1">
                             <connections>
                                 <segue destination="SSf-Ck-xgc" kind="modal" identifier="ShowAdd" id="B5F-z4-f5g"/>
                             </connections>

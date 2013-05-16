@@ -32,6 +32,7 @@
     [super viewDidLoad];
     
     self.content = [[NSMutableArray alloc] initWithContentsOfFile:[AppDelegate writeableFilePath]];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning
@@ -96,6 +97,22 @@
 {
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         [self performSegueWithIdentifier: @"showDetails" sender: self];
+    }
+}
+
+// Override to support Edit mode for the table view
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [self.content removeObjectAtIndex:indexPath.row];
+        [self.content writeToFile:[AppDelegate writeableFilePath] atomically:YES];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
 
