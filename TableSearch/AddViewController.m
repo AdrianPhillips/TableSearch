@@ -116,7 +116,7 @@
 - (IBAction)takePhoto {
     
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    //picker.delegate = self;
+    picker.delegate = self;
     picker.allowsEditing = YES;
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     
