@@ -33,13 +33,38 @@
 {
     [super viewDidLoad];
     
-    content = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Data" ofType:@"plist"]];
+    content = [[NSMutableArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Data" ofType:@"plist"]];
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSString *filePath = [self plistFileDocumentPath:@"Data.plist"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL exist = [fileManager fileExistsAtPath:filePath];
+    if (!exist) {
+        return;
+    }
+    NSMutableArray *dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+    content = dataArray;
+    [self.tableView reloadData];
+}
+
+- (NSString *)plistFileDocumentPath:(NSString *)plistName
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *writablePath = [documentsDirectory stringByAppendingPathComponent:plistName];
+    return writablePath; 
 }
 
 - (IBAction)add;
 {
     AddViewController* controller = [[AddViewController alloc] init];
     [self presentViewController:controller animated:YES completion:nil];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -91,17 +116,58 @@
         cell.detailTextLabel.text = [[searchResults objectAtIndex:indexPath.row] valueForKey:@"state"];
         cell.imageView.image = [UIImage imageNamed:[[self.searchResults objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
     } else {
-        cell.textLabel.text = [[self.content objectAtIndex:indexPath.row] valueForKey:@"city"];
-        cell.detailTextLabel.text = [[self.content objectAtIndex:indexPath.row] valueForKey:@"state"];
-        cell.imageView.image = [UIImage imageNamed:[[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
+        
+        UILabel *nameLabel = (UILabel *)[cell viewWithTag:100];
+        nameLabel.text = [[self.content objectAtIndex:indexPath.row] valueForKey:@"city"];
+        UILabel *stateLabel = (UILabel *)[cell viewWithTag:101];
+        stateLabel.text = [[self.content objectAtIndex:indexPath.row] valueForKey:@"state"];
+        // Construct the expected URL for the image.
+        NSURL *imageFileURL = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
+        imageFileURL = [imageFileURL URLByAppendingPathComponent:[[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"] isDirectory:NO];
+        // Attempt to load the image at the above URL.
+        cell.imageView.image = [[[UIImage alloc] initWithContentsOfFile:[imageFileURL path]] autorelease];
+        UIImageView * cityImage = (UIImageView *) [cell viewWithTag:102];
+        
+        if (!cell.imageView.image)
+        cityImage.image = [UIImage imageNamed:[[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"]];
 
     }
     
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
 
+- (void)tableView:(UITableView *)_tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *path = [documentsDirectory stringByAppendingPathComponent:@"Data.plist"];
+        [self.content removeObjectAtIndex:indexPath.row];
+        [self.content writeToFile:path atomically:YES];
+        [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+}
 
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+    // remove object and insert at new position
+    NSString *tmp = [[NSString alloc] initWithString:[self.content objectAtIndex:fromIndexPath.row]];
+    [content removeObjectAtIndex:fromIndexPath.row];
+    [content insertObject:tmp atIndex:toIndexPath.row];
+    [tmp release];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.searchDisplayController.searchResultsTableView) {
@@ -126,10 +192,10 @@
             DVC.stateNameString = [[searchResults objectAtIndex:indexPath.row] valueForKey:@"state"];
         } else {
             
-            DVC.cityImageString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"];
             DVC.cityTextString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"cityText"];
             DVC.cityNameString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"city"];
             DVC.stateNameString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"state"];
+            DVC.cityImageString = [[self.content objectAtIndex:indexPath.row] valueForKey:@"cityImage"];
         }
     }
 }

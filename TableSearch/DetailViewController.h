@@ -24,6 +24,6 @@
 @property (nonatomic, retain) NSString *cityTextString;
 @property (nonatomic, retain) NSString *cityNameString;
 @property (nonatomic, retain) NSString *stateNameString;
-
+@property (nonatomic, strong) UIImage* image;
 
 @end
